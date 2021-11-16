@@ -6,6 +6,7 @@ import com.sparta.springcore02.service.ProductService;
 import com.sparta.springcore02.dto.ProductMypriceRequestDto;
 import com.sparta.springcore02.dto.ProductRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
@@ -48,7 +49,8 @@ public class ProductController {
         return product.getId();
     }
 
-    //관리자용 등록된 상품 모두 조회
+    // (관리자용) 등록된 모든 상품 목록 조회
+    @Secured("ROLE_ADMIN") //관리자만 사용가능
     @GetMapping("/api/admin/products")
     public List<Product> getAllProducts() {
         return productService.getAllProducts();
