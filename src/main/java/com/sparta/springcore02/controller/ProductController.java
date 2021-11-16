@@ -47,4 +47,10 @@ public class ProductController {
         Product product = productService.updateProduct(id, requestDto);
         return product.getId();
     }
+
+    //관리자용 등록된 상품 모두 조회
+    @GetMapping("/api/admin/products")
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
+    }
 }
