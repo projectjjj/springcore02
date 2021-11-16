@@ -1,10 +1,12 @@
 package com.sparta.springcore02.controller;
 
 import com.sparta.springcore02.model.Product;
+import com.sparta.springcore02.security.UserDetailsImpl;
 import com.sparta.springcore02.service.ProductService;
 import com.sparta.springcore02.dto.ProductMypriceRequestDto;
 import com.sparta.springcore02.dto.ProductRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.util.List;
@@ -23,16 +25,18 @@ public class ProductController {
 
     // 등록된 전체 상품 목록 조회
     @GetMapping("/api/products")
-    public List<Product> getProducts() throws SQLException {
-        List<Product> products = productService.getProducts();
-        // 응답 보내기
-        return products;
+    public List<Product> getProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Long userId = userDetails.getUser().getId();
+        return productService.getProducts(userId);
     }
 
     // 신규 상품 등록
     @PostMapping("/api/products")
-    public Product createProduct(@RequestBody ProductRequestDto requestDto)  {
-        Product product = productService.createProduct(requestDto);
+    //@AuthenticationPrincipal는 스프링 시큐리티가 보내줬던 userDetails 정보!
+    public Product createProduct(@RequestBody ProductRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails)  {
+        //로그인 되어있는 ID
+        Long userId = userDetails.getUser().getId(); //테이블의 ID!
+        Product product = productService.createProduct(requestDto, userId); //테이블 Id임
         // 응답 보내기
         return product;
     }
