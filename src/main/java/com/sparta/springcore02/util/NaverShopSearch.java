@@ -1,5 +1,6 @@
-package com.sparta.springcore02;
+package com.sparta.springcore02.util;
 
+import com.sparta.springcore02.dto.ItemDto;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.*;

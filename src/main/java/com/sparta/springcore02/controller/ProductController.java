@@ -1,10 +1,9 @@
-package com.sparta.springcore02;
+package com.sparta.springcore02.controller;
 
-import com.sparta.springcore02.Product;
-import com.sparta.springcore02.ProductMypriceRequestDto;
-import com.sparta.springcore02.ProductRequestDto;
-import com.sparta.springcore02.ProductService;
-import lombok.RequiredArgsConstructor;
+import com.sparta.springcore02.model.Product;
+import com.sparta.springcore02.service.ProductService;
+import com.sparta.springcore02.dto.ProductMypriceRequestDto;
+import com.sparta.springcore02.dto.ProductRequestDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
@@ -32,7 +31,7 @@ public class ProductController {
 
     // 신규 상품 등록
     @PostMapping("/api/products")
-    public Product createProduct(@RequestBody ProductRequestDto requestDto) throws SQLException {
+    public Product createProduct(@RequestBody ProductRequestDto requestDto)  {
         Product product = productService.createProduct(requestDto);
         // 응답 보내기
         return product;
@@ -40,7 +39,7 @@ public class ProductController {
 
     // 설정 가격 변경
     @PutMapping("/api/products/{id}")
-    public Long updateProduct(@PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto) throws SQLException {
+    public Long updateProduct(@PathVariable Long id, @RequestBody ProductMypriceRequestDto requestDto)  {
         Product product = productService.updateProduct(id, requestDto);
         return product.getId();
     }

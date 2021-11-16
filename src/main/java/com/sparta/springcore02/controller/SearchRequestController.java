@@ -1,5 +1,7 @@
-package com.sparta.springcore02;
+package com.sparta.springcore02.controller;
 
+import com.sparta.springcore02.dto.ItemDto;
+import com.sparta.springcore02.util.NaverShopSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
