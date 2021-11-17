@@ -4,22 +4,24 @@ import com.sparta.springcore02.model.Product;
 import com.sparta.springcore02.dto.ProductMypriceRequestDto;
 import com.sparta.springcore02.dto.ProductRequestDto;
 import com.sparta.springcore02.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class ProductService {
     // 멤버 변수 선언
     private final ProductRepository productRepository;
 
     // 생성자: ProductSephrosrvice() 가 생성될 때 호출됨
-    @Autowired
-    public ProductService(ProductRepository productRepository) {
-        // 멤버 변수 생성
-        this.productRepository = productRepository;
-    }
+//    @Autowired
+//    public ProductService(ProductRepository productRepository) {
+//        // 멤버 변수 생성
+//        this.productRepository = productRepository;
+//    }
 
     public List<Product> getProducts(Long userId) {
         // 멤버 변수 사용
@@ -46,4 +48,5 @@ public class ProductService {
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
+
 }

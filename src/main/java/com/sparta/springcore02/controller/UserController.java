@@ -1,8 +1,10 @@
 package com.sparta.springcore02.controller;
 
 import com.sparta.springcore02.dto.SignupRequestDto;
+import com.sparta.springcore02.security.UserDetailsImpl;
 import com.sparta.springcore02.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,5 +46,12 @@ public class UserController {
     @GetMapping("/user/forbidden")
     public String forbidden() {
         return "forbidden";
+    }
+
+    @GetMapping("/user/kakao/callback")
+    public String kakaoLogin(String code) {
+        //authorizedCode : ㅋㅏ카오로부터 받은 인가코드
+        userService.kakaoLogin(code);
+        return "redirect:/";
     }
 }
