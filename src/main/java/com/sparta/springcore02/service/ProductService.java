@@ -6,6 +6,10 @@ import com.sparta.springcore02.dto.ProductRequestDto;
 import com.sparta.springcore02.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,10 +26,14 @@ public class ProductService {
 //        // 멤버 변수 생성
 //        this.productRepository = productRepository;
 //    }
+    //회원 id로 등록된 모든 상품 조회 / 몇페이지/페이지에 몇개씩뿌러주나 / 어떤 기준 / 오름차순내림차순
+    public Page<Product> getProducts(Long userId, int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        //결국 페이징 할려면 pageable 만들어야한다.
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-    public List<Product> getProducts(Long userId) {
-        // 멤버 변수 사용
-        return productRepository.findAllByUserId(userId);
+        return productRepository.findAllByUserId(userId, pageable);
     }
 
     public Product createProduct(ProductRequestDto requestDto,Long userId){
@@ -44,9 +52,13 @@ public class ProductService {
         product.setMyprice(myPrice);
         return product;
     }
+    // 모든 상품 조회 (관리자용)
+    public Page<Product> getAllProducts(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+        return productRepository.findAll(pageable);
     }
 
 }

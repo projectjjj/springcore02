@@ -1,34 +1,44 @@
 package com.sparta.springcore02.controller;
 
 import com.sparta.springcore02.model.Product;
+import com.sparta.springcore02.model.User;
+import com.sparta.springcore02.model.UserRole;
+import com.sparta.springcore02.repository.UserRepository;
 import com.sparta.springcore02.security.UserDetailsImpl;
 import com.sparta.springcore02.service.ProductService;
 import com.sparta.springcore02.dto.ProductMypriceRequestDto;
 import com.sparta.springcore02.dto.ProductRequestDto;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.util.List;
 
+@RequiredArgsConstructor
 @RestController // JSON으로 데이터를 주고받음을 선언합니다.
 public class ProductController {
     // 멤버 변수 선언
     private final ProductService productService;
+    private final UserRepository userRepository;
 
-    // 생성자: ProductController() 가 생성될 때 호출됨
-    @Autowired
-    public ProductController(ProductService productService) {
-        // 멤버 변수 생성
-        this.productService = productService;
-    }
-
-    // 등록된 전체 상품 목록 조회
+    // 로그인한 회원이 등록한 상품들 조회
     @GetMapping("/api/products")
-    public List<Product> getProducts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public Page<Product> getProducts(
+            //jpa 사용하면 Page 라는 객체 제공
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
         Long userId = userDetails.getUser().getId();
-        return productService.getProducts(userId);
+        page = page - 1;
+        return productService.getProducts(userId, page , size, sortBy, isAsc);
     }
 
     // 신규 상품 등록
@@ -37,7 +47,7 @@ public class ProductController {
     public Product createProduct(@RequestBody ProductRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails)  {
         //로그인 되어있는 ID
         Long userId = userDetails.getUser().getId(); //테이블의 ID!
-        Product product = productService.createProduct(requestDto, userId); //테이블 Id임
+        Product product = productService.createProduct(requestDto, userId); //테이블 Id임 userId를 변수 지정하지않고 userDetails.getUser().getID() 로 바로 가능.
         // 응답 보내기
         return product;
     }
@@ -50,9 +60,14 @@ public class ProductController {
     }
 
     // (관리자용) 등록된 모든 상품 목록 조회
-    @Secured("ROLE_ADMIN") //관리자만 사용가능
+    @Secured("ROLE_ADMIN")
     @GetMapping("/api/admin/products")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public Page<Product> getAllProducts(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc
+    ) {
+        return productService.getAllProducts(page , size, sortBy, isAsc);
     }
 }
